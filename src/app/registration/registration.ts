@@ -35,7 +35,7 @@ export class RegistrationComponent {
 
   registerUser() {
     if (this.isValidForm()) {
-      const usernameInput = this.registerForm.value.username!
+      const usernameInput = this.registerForm.value.username!;
 
       this.userService.getUserByUsername(usernameInput).subscribe(existingUser => {
         if (existingUser != null) {
