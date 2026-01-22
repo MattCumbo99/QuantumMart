@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterLink } from "@angular/router";
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,33 @@ import { RouterLink } from "@angular/router";
   styleUrl: './login.scss',
 })
 export class LoginComponent {
-  username = new FormControl<string>('', Validators.required);
-  password = new FormControl<string>('', Validators.required);
+  readonly loginForm = new FormGroup({
+    username: new FormControl<string>('', Validators.required),
+    password: new FormControl<string>('', Validators.required)
+  });
+
+  btnLoginDisabled = true;
+
+  constructor(private authService: AuthService) {}
+
+  formValid(): boolean {
+    this.btnLoginDisabled = !this.loginForm.valid;
+
+    return this.loginForm.valid;
+  }
+
+  login() {
+    if (this.loginForm.valid) {
+      const username = this.loginForm.value.username!;
+      const password = this.loginForm.value.password!;
+
+      this.authService.passwordMatches(username, password).subscribe(matches => {
+        if (matches) {
+          alert("Login successful!");
+        } else {
+          alert("Invalid username or password.");
+        }
+      });
+    }
+  }
 }
