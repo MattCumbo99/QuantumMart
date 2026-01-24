@@ -1,24 +1,18 @@
 import { Component, Input, numberAttribute, OnInit } from '@angular/core';
+import { CurrencyPipe } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
-import { ItemListingService } from '../item-listing.service';
 import { UserService } from '../../users/user.service';
+import { ItemListing } from '../item-listing.model';
 
 @Component({
   selector: 'app-item-listing',
-  imports: [MatCardModule],
+  imports: [MatCardModule, CurrencyPipe],
   templateUrl: './item-listing.html',
   styleUrl: './item-listing.scss',
 })
 export class ItemListingComponent implements OnInit {
 
-  @Input({ required: true, alias:"id" }) listingId!: string;
-
-  title!: string;
-  description: string = "";
-  price!: number;
-  imageUrl?: string;
-  createdAt!: string;
-  updatedAt!: string;
+  @Input({ required: true }) listing!: ItemListing;
 
   sellerImgUrl?: string;
   sellerUsername!: string;
@@ -26,32 +20,19 @@ export class ItemListingComponent implements OnInit {
   loaded = false;
 
   constructor(
-    private itemListingService: ItemListingService,
     private userService: UserService
   ) {}
 
   ngOnInit(): void {
-    // Load listing information
-    this.itemListingService.getListingById(this.listingId).subscribe({
-      next: listing => {
-        // Load seller information
-        this.userService.getUserById(listing.sellerId).subscribe({
-          next: user => {
-            if (user != null) {
-              this.title = listing.title;
-              this.description = listing.description;
-              this.createdAt = listing.createdAt;
-              this.updatedAt = listing.updatedAt;
-              this.price = listing.price;
-              this.imageUrl = listing.imageUrl;
+    // Load seller information
+    this.userService.getUserById(this.listing.sellerId).subscribe({
+      next: user => {
+        if (user != null) {
+          this.sellerImgUrl = "" // TODO
+          this.sellerUsername = user.username;
 
-              this.sellerImgUrl = "" // TODO
-              this.sellerUsername = user.username;
-
-              this.loaded = true;
-            }
-          }
-        });
+          this.loaded = true;
+        }
       }
     });
   }

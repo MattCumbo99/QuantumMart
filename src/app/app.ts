@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, Injectable, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { MatTabsModule, MatTabNav } from '@angular/material/tabs';
 import { Router, RouterOutlet, RouterLinkWithHref } from '@angular/router';
 
@@ -9,9 +9,16 @@ import { Router, RouterOutlet, RouterLinkWithHref } from '@angular/router';
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-@Injectable({ providedIn: 'root' })
-export class App {
+export class AppComponent {
   private http = inject(HttpClient);
   
   protected readonly title = signal('QuantumMart');
+
+  private readonly hiddenRoutes = ['/login', '/register'];
+
+  constructor(private router: Router) {}
+
+  showNavBar(): boolean {
+    return !this.hiddenRoutes.includes(this.router.url);
+  }
 }
