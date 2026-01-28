@@ -11,3 +11,8 @@
         <p>There are no listings yet.</p>
     }
 </div>
+@if (loggedIn) {
+    <button matFab (click)="openDialog()" class="floating-btn">
+        <mat-icon>add</mat-icon>
+    </button>
+}

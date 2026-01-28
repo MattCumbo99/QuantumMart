@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>Create Listing</h2>
+<mat-dialog-content>
+    <form [formGroup]="listingForm" class="form-align">
+        <mat-form-field>
+            <mat-label>Title</mat-label>
+            <input matInput formControlName="title"/>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Image URL</mat-label>
+            <input matInput formControlName="imageUrl"/>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Description</mat-label>
+            <textarea matInput formControlName="description"></textarea>
+        </mat-form-field>
+        <mat-form-field>
+            <mat-label>Price</mat-label>
+            <span matTextPrefix>$ &nbsp;</span>
+            <input matInput value="0.00" formControlName="price"/>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button matButton>Create Listing</button>
+</mat-dialog-actions>
