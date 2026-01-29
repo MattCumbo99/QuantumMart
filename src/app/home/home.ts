@@ -4,20 +4,11 @@ import { ItemListing } from '../item-listings/item-listing.model';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { ItemListingComponent } from '../item-listings/item-listing/item-listing';
 import { AuthService } from '../auth/auth.service';
-import { MatButtonModule, MatFabButton } from "@angular/material/button";
+import { MatFabButton } from "@angular/material/button";
 import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { FormControl, FormGroup, FormsModule, Validators, ReactiveFormsModule } from '@angular/forms';
-import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
-  MatDialogRef,
-  MatDialogTitle,
-} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
+import { AddListingDialogComponent } from './add-listing-dialog/add-listing.dialog';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -31,49 +22,31 @@ export class HomeComponent implements OnInit {
   readonly dialog = inject(MatDialog);
 
   constructor(
-    private itemService: ItemListingService,
-    private authService: AuthService
+    private authService: AuthService,
+    private route: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.itemService.getAllListings().subscribe({
-      next: listings => this.listings = listings
-    });
+    this.listings = this.route.snapshot.data['listings'];
   }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(AddListingDialogComponent, {
-      width: '600px'
+      width: '600px',
+      disableClose: true
+    });
+
+    dialogRef.beforeClosed().subscribe(result => {
+      if (result === 'confirm-close') {
+        // allow closing
+      } else {
+        // user cancelled the close
+        dialogRef.disableClose = false;
+      }
     });
   }
 
   get loggedIn(): boolean {
     return this.authService.isLoggedIn;
   }
-}
-
-@Component({
-  selector: 'add-listing-dialog',
-  imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    FormsModule,
-    MatButtonModule,
-    MatDialogTitle,
-    MatDialogContent,
-    MatDialogActions,
-    ReactiveFormsModule
-  ],
-  templateUrl: './add-listing-dialog/add-listing.dialog.html',
-  styleUrl: './add-listing-dialog/add-listing.dialog.scss'
-})
-export class AddListingDialogComponent {
-  readonly dialogRef = inject(MatDialogRef<AddListingDialogComponent>);
-
-  readonly listingForm = new FormGroup({
-    title: new FormControl('', Validators.required),
-    description: new FormControl(''),
-    imageUrl: new FormControl(''),
-    price: new FormControl('0.00', [Validators.required, Validators.pattern(RegExp('^[0-9]+(\.[0-9]{1,2})?$'))])
-  });
 }

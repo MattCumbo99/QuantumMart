@@ -3,7 +3,7 @@
     <form [formGroup]="listingForm" class="form-align">
         <mat-form-field>
             <mat-label>Title</mat-label>
-            <input matInput formControlName="title"/>
+            <input matInput maxlength="150" formControlName="title"/>
         </mat-form-field>
         <mat-form-field>
             <mat-label>Image URL</mat-label>
@@ -11,15 +11,16 @@
         </mat-form-field>
         <mat-form-field>
             <mat-label>Description</mat-label>
-            <textarea matInput formControlName="description"></textarea>
+            <textarea matInput maxlength="500" formControlName="description"></textarea>
         </mat-form-field>
         <mat-form-field>
             <mat-label>Price</mat-label>
             <span matTextPrefix>$ &nbsp;</span>
-            <input matInput value="0.00" formControlName="price"/>
+            <input matInput value="0.00" formControlName="price" priceInput/>
         </mat-form-field>
     </form>
 </mat-dialog-content>
 <mat-dialog-actions>
-    <button matButton>Create Listing</button>
+    <button matButton (click)="closeWithConfirm()">Cancel</button>
+    <button matButton="filled" [disabled]="!formValid()" (click)="createListing()">Create Listing</button>
 </mat-dialog-actions>
