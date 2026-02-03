@@ -26,8 +26,9 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.itemListingService.getAllListings().subscribe((data) => {
-      this.listings = data;
+    this.itemListingService.getAllListings().subscribe({
+      next: (data) => (this.listings = data),
+      error: (_) => (this.listings = []),
     });
   }
 
