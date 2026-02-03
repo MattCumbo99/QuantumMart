@@ -8,7 +8,6 @@ import { MatFabButton } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { AddListingDialogComponent } from './add-listing-dialog/add-listing.dialog';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -23,11 +22,13 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private route: ActivatedRoute,
+    private itemListingService: ItemListingService,
   ) {}
 
   ngOnInit(): void {
-    this.listings = this.route.snapshot.data['listings'];
+    this.itemListingService.getAllListings().subscribe((data) => {
+      this.listings = data;
+    });
   }
 
   openDialog(): void {
