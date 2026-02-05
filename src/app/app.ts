@@ -49,7 +49,7 @@ export class AppComponent {
   }
 
   profile(): void {
-    this.router.navigate(['/profile/'+this.authService.username]);
+    this.router.navigate(['/profile/' + this.authService.username]);
   }
 
   showNavBar(): boolean {

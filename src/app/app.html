@@ -1,22 +1,22 @@
 <main>
   <h1>Quantum Mart</h1>
-    @if (showNavBar()) {
-      @if (username != null) {
-        <mat-card class="clickable-card user-card" (click)="profile()" >
-          <mat-card-header>
-            <div mat-card-avatar class="avatar-img"></div>
-            <mat-card-title>{{ username }}</mat-card-title>
-            <mat-card-subtitle>
-              <button matButton="filled" (click)="logout()">Logout</button>
-            </mat-card-subtitle>
-          </mat-card-header>
-        </mat-card>
-      } @else {
-        <div class="login-register">
-          <h2><a routerLink="/login">Login</a> or <a routerLink="/register">Register</a></h2>
-        </div>
-      }
+  @if (showNavBar()) {
+    @if (username != null) {
+      <mat-card class="clickable-card user-card" (click)="profile()">
+        <mat-card-header>
+          <div mat-card-avatar class="avatar-img"></div>
+          <mat-card-title>{{ username }}</mat-card-title>
+          <mat-card-subtitle>
+            <button matButton="filled" (click)="logout()">Logout</button>
+          </mat-card-subtitle>
+        </mat-card-header>
+      </mat-card>
+    } @else {
+      <div class="login-register">
+        <h2><a routerLink="/login">Login</a> or <a routerLink="/register">Register</a></h2>
+      </div>
     }
+  }
 
   <nav mat-tab-nav-bar [tabPanel]="tabPanel">
     <a mat-tab-link routerLink="/home">Home</a>
