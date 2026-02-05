@@ -4,11 +4,10 @@ import { ItemListing } from '../item-listings/item-listing.model';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { ItemListingComponent } from '../item-listings/item-listing/item-listing';
 import { AuthService } from '../auth/auth.service';
-import { MatFabButton } from "@angular/material/button";
+import { MatFabButton } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { AddListingDialogComponent } from './add-listing-dialog/add-listing.dialog';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -23,20 +22,23 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private authService: AuthService,
-    private route: ActivatedRoute
+    private itemListingService: ItemListingService,
   ) {}
 
   ngOnInit(): void {
-    this.listings = this.route.snapshot.data['listings'];
+    this.itemListingService.getAllListings().subscribe({
+      next: (data) => (this.listings = data),
+      error: (_) => (this.listings = []),
+    });
   }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(AddListingDialogComponent, {
       width: '600px',
-      disableClose: true
+      disableClose: true,
     });
 
-    dialogRef.beforeClosed().subscribe(result => {
+    dialogRef.beforeClosed().subscribe((result) => {
       if (result === 'confirm-close') {
         // allow closing
       } else {
