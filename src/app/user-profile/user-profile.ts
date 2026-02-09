@@ -14,6 +14,7 @@ import { ItemListingService } from '../item-listings/item-listing.service';
 import { ItemListing } from '../item-listings/item-listing.model';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { ItemListingComponent } from '../item-listings/item-listing/item-listing';
+import { DateService } from '../date/date.service';
 @Component({
   selector: 'app-user-profile',
   imports: [
@@ -32,27 +33,26 @@ export class UserProfile {
     private userService: UserService,
     private authService: AuthService,
     private itemListingService: ItemListingService,
+    private dateService: DateService,
   ) {}
-  username: any;
-  user: User;
-  dateCreated: Date;
-  sDateCreated: String;
+  username!: string;
+  user!: User;
+  sDateCreated!: string;
 
   listings: ItemListing[] = [];
 
   ngOnInit(): void {
-    this.username = this.authService.username;
+    this.username = this.authService.username ?? '';
     this.userService.getUserByUsername(this.username).subscribe({
       next: (user) => {
-        this.user = user;
-        this.dateCreated = new Date(this.user.createdAt);
-        this.sDateCreated =
-          this.dateCreated.getMonth() +
-          1 +
-          '/' +
-          this.dateCreated.getDate() +
-          '/' +
-          this.dateCreated.getFullYear();
+        if (user != null) {
+          this.user = user;
+          this.username = user.username;
+          this.sDateCreated = this.dateService.formatSpecificDate(
+            new Date(this.user.createdAt),
+            'MM/dd/yyyy',
+          );
+        }
       },
       error: (err: HttpErrorResponse) => alert(err.message),
     });
