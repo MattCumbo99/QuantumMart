@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CartItem } from '../../cart/cart-item.model';
 import { MatListModule } from '@angular/material/list';
 import { MatDividerModule } from '@angular/material/divider';
@@ -49,9 +49,9 @@ import { ItemListing } from '../../item-listings/item-listing.model';
   templateUrl: './cart-dialog.html',
   styleUrl: './cart-dialog.scss',
 })
-export class CartDialogComponent {
+export class CartDialogComponent implements OnInit {
   readonly data = inject<CartDialogData>(MAT_DIALOG_DATA);
-  readonly cartItems = signal(this.data.cartItems);
+  readonly cartItems = signal<CartItem[]>([]);
   readonly cartTotal = computed(() =>
     // Dynamically calculates the cart total as items are retrieved
     this.cartItems().reduce((sum, item) => sum + item.itemListing.price * item.quantity, 0),
@@ -62,25 +62,42 @@ export class CartDialogComponent {
     private authService: AuthService,
   ) {}
 
+  ngOnInit(): void {
+    this.loadCartItems();
+  }
+
+  private loadCartItems(): void {
+    this.cartService.getCartItemsByUserId(this.data.userId).subscribe({
+      next: (items) => this.cartItems.set(items),
+      error: (_) => alert("ERROR: Couldn't fetch items for user!"),
+    });
+  }
+
   clearCart(): void {
     const shouldClear = confirm('Are you sure you want to remove ALL items in your cart?');
 
     if (shouldClear) {
       this.cartService.clearCart(this.authService.userId!!).subscribe({
-        next: (_) => alert('Your cart was cleared.'),
+        next: (_) => {
+          alert('Your cart was cleared.');
+          this.loadCartItems();
+        },
         error: (_) => alert("ERROR: Couldn't clear your cart."),
       });
     }
   }
 
-  removeItem(listing: ItemListing) {
+  removeItem(listing: ItemListing): void {
     this.cartService.removeItemFromCart(this.authService.userId!!, listing.id!).subscribe({
-      next: (_) => alert('Removed item: ' + listing.title),
+      next: (_) => {
+        alert('Removed item: ' + listing.title);
+        this.loadCartItems();
+      },
       error: (_) => alert("ERROR: Couldn't remove item!"),
     });
   }
 }
 
 interface CartDialogData {
-  cartItems: CartItem[];
+  userId: string;
 }
