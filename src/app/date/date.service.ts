@@ -7,7 +7,7 @@ import { Injectable, LOCALE_ID, Inject } from '@angular/core';
 export class DateService {
   constructor(@Inject(LOCALE_ID) private locale: string) {}
 
-  formatSpecificDate(date: Date, format: string = 'MM/dd/yyyy'): string {
-    return formatDate(date, format, this.locale);
+  formatDate(date: Date): string {
+    return date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear();
   }
 }

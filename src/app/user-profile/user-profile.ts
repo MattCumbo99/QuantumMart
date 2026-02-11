@@ -35,30 +35,24 @@ export class UserProfile {
     private itemListingService: ItemListingService,
     private dateService: DateService,
   ) {}
-  username!: string;
   user!: User;
   sDateCreated!: string;
 
   listings: ItemListing[] = [];
 
   ngOnInit(): void {
-    this.username = this.authService.username ?? '';
-    this.userService.getUserByUsername(this.username).subscribe({
+    this.userService.getUserByUsername(this.authService.username ?? '').subscribe({
       next: (user) => {
         if (user != null) {
           this.user = user;
-          this.username = user.username;
-          this.sDateCreated = this.dateService.formatSpecificDate(
-            new Date(this.user.createdAt),
-            'MM/dd/yyyy',
-          );
+          this.sDateCreated = this.dateService.formatDate(new Date(this.user.createdAt));
+          this.itemListingService.getAllListingsByUsername(this.user.username ?? '').subscribe({
+            next: (data) => (this.listings = data),
+            error: (_) => (this.listings = []),
+          });
         }
       },
       error: (err: HttpErrorResponse) => alert(err.message),
-    });
-    this.itemListingService.getAllListingsByUsername(this.username).subscribe({
-      next: (data) => (this.listings = data),
-      error: (_) => (this.listings = []),
     });
   }
 }
