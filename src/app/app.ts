@@ -43,9 +43,14 @@ export class AppComponent {
     return this.authService.username;
   }
 
-  logout(): void {
+  logout(event: Event): void {
+    event.stopPropagation();
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  profile(): void {
+    this.router.navigate(['/profile/' + this.authService.username]);
   }
 
   showNavBar(): boolean {
