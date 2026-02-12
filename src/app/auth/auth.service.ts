@@ -18,6 +18,7 @@ export class AuthService {
   }
 
   logout(): void {
+    event.stopPropagation();
     this.storage?.removeItem('token');
     this.storage?.removeItem('username');
   }
