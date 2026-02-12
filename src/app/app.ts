@@ -45,7 +45,6 @@ export class AppComponent {
 
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/login']);
   }
 
   showNavBar(): boolean {
